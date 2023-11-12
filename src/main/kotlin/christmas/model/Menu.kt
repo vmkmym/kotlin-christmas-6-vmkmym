@@ -19,11 +19,13 @@ enum class Menu(val menuName: String, val price: Int) {
     CHAMPAGNE("샴페인", 25000);
 
     companion object {
-        fun isValidMenu(menuName: String): Boolean {
-            return Menu.values().any { it.menuName == menuName }
+        fun isValidMenu(menuName: String) {
+            if (Menu.values().none { it.menuName == menuName }) {
+                throw IllegalArgumentException("[ERROR] 메뉴 이름이 유효하지 않습니다. 다시 입력해 주세요.")
+            }
         }
 
-        fun validateQuantity(quantity: Int) {
+        fun minQuantity(quantity: Int) {
             if (quantity <= 0) {
                 throw IllegalArgumentException("[ERROR] 유효하지 않은 주문입니다. 다시 입력해 주세요.")
             }
@@ -35,15 +37,19 @@ enum class Menu(val menuName: String, val price: Int) {
             }
         }
 
-        fun validateMenuFormat(menu: String) {
-            if (!menu.matches(Regex("[a-zA-Z]+-[0-9]+"))) {
-                throw IllegalArgumentException("[ERROR] 유효하지 않은 주문입니다. 다시 입력해 주세요.")
-            }
+        private val beverageCategories = setOf("제로콜라", "레드와인", "샴페인")
+
+        private fun isBeverage(menuName: String): Boolean {
+            return menuName in beverageCategories
         }
 
-//        fun checkOnlyDrink(orderedItems: Map<String, Int>): Boolean {
-//            val drinkItems = orderedItems.filter { isDrink(it.key) }
-//            return drinkItems.size == orderedItems.size
-//        }
+        fun checkBeverageOnly(menuList: List<Pair<String, Int>>) {
+            val hasBeverage = menuList.any { (menuName, _) -> isBeverage(menuName) }
+            val hasOtherItems = menuList.any { (menuName, _) -> !isBeverage(menuName) }
+
+            if (hasBeverage && !hasOtherItems) {
+                throw IllegalArgumentException("[ERROR] 음료만 주문할 수 없습니다. 다시 입력해 주세요.")
+            }
+        }
     }
 }

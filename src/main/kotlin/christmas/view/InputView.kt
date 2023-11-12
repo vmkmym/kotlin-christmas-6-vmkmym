@@ -1,11 +1,10 @@
 package christmas.view
 
 import camp.nextstep.edu.missionutils.Console
-import christmas.model.Menu.Companion.isDrink
+import christmas.model.Menu.Companion.checkBeverageOnly
 import christmas.model.Menu.Companion.isValidMenu
 import christmas.model.Menu.Companion.maxQuantity
-import christmas.model.Menu.Companion.validateMenuFormat
-import christmas.model.Menu.Companion.validateQuantity
+import christmas.model.Menu.Companion.minQuantity
 
 class InputView {
     fun readDate(): Int {
@@ -35,7 +34,7 @@ class InputView {
                 val input = Console.readLine()
                 return checkOrderInput(input)
             } catch (e: IllegalArgumentException) {
-                throw IllegalArgumentException("[ERROR] 유효하지 않은 주문입니다. 다시 입력해 주세요.")
+                println(e.message)
             }
         }
     }
@@ -43,6 +42,7 @@ class InputView {
 
     private fun checkOrderInput(input: String): Map<String, Int> {
         val orderedItems = mutableSetOf<Pair<String, Int>>()
+        val menuList = mutableListOf<Pair<String, Int>>()
 
         return input.split(",").associate {
             val (menu, quantity) = it.split("-")
@@ -52,26 +52,31 @@ class InputView {
                 throw IllegalArgumentException("[ERROR] 중복된 메뉴가 있습니다. 다시 입력해 주세요.")
             }
 
-            if (!isValidMenu(menu)) {
-                throw IllegalArgumentException("[ERROR] 메뉴 이름이 유효하지 않습니다. 다시 입력해 주세요.")
+            if (!isValidFormat(it)) {
+                throw IllegalArgumentException("[ERROR] 올바르지 않은 형식의 입력이 있습니다. 다시 입력해 주세요.")
             }
 
-
             validateOrder(menu, quantity.toInt())
+            menuList.add(order)
             order.first to order.second
+        }.also {
+            checkBeverageOnly(menuList)
         }
-
-
     }
 
+    private fun isValidFormat(input: String): Boolean {
+        return try {
+            val (menu, quantity) = input.split("-")
+            quantity.toInt()
+            true
+        } catch (e: Exception) {
+            false
+        }
+    }
 
     private fun validateOrder(menu: String, quantity: Int) {
         isValidMenu(menu)
-        validateQuantity(quantity)
+        minQuantity(quantity)
         maxQuantity(quantity)
-        validateMenuFormat(menu)
-        isDrink(menu)
     }
-
-
 }
