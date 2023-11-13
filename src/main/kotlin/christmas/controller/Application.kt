@@ -3,7 +3,6 @@ package christmas.controller
 import christmas.view.InputView
 import christmas.view.OutputView
 
-//import christmas.view.OutputView
 
 fun main() {
     val inputView = InputView()
@@ -27,4 +26,11 @@ fun main() {
     outputView.totalGift(orderItems)
     // 혜택 내역
     outputView.totalDiscount(date, orderItems, totalPrice)
+    // 총 혜택 금액
+    outputView.totalBenefits(orderItems, date, totalPrice)
+    // 할인 후 예상 금액
+    outputView.finalPayment(orderItems, date, totalPrice)
+    // 12월 이벤트 배지
+    outputView.eventBadge(orderItems, date, totalPrice)
+
 }

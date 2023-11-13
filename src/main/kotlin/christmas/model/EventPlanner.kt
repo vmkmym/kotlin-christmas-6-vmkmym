@@ -37,6 +37,10 @@ class EventPlanner {
             return price.toString().reversed().chunked(3).joinToString(",").reversed()
         }
 
+        private fun formattingPrice(price: Int): Int {
+            return price
+        }
+
         private fun getMenuPrice(menuName: String, menuList: List<Menu>): Int {
             val menu = menuList.find { it.menuName == menuName }
             return menu?.price ?: 0
@@ -57,9 +61,9 @@ class EventPlanner {
             return if (date in 1..25) discountAmount else 0
         }
 
-        fun christmasDay(date: Int): String {
+        fun christmasDay(date: Int): Int {
             val discountedChristmas = calculateChristmasDiscount(date)
-            return formatPrice(discountedChristmas)
+            return formattingPrice(discountedChristmas)
         }
 
         private fun isWeekday(date: Int): Boolean {
@@ -67,30 +71,26 @@ class EventPlanner {
             return date in weekdays
         }
 
-        fun weekdayDiscount(orderItems: List<OrderMenu>, date: Int): String {
+        fun weekdayDiscount(orderItems: List<OrderMenu>, date: Int): Int {
             val dessertMenu = setOf("초코케이크", "아이스크림")
             val discountPerMenu = 2023
             val discountedWeekday = orderItems.filter { it.name in dessertMenu && isWeekday(date) }
                 .sumOf { it.quantity * discountPerMenu }
 
-            return formatPrice(discountedWeekday)
+            return formattingPrice(discountedWeekday)
         }
 
-        fun specialDiscount(date: Int, orderItems: List<OrderMenu>): String {
+        fun specialDiscount(date: Int): Int {
             val specialDiscountDates = setOf(3, 10, 17, 24, 25, 31)
             val discountPerOrder = 1000
-            return if (date in specialDiscountDates) {
-                formatPrice(discountPerOrder)
-            } else {
-                "0원"
-            }
+            return if (date in specialDiscountDates) formattingPrice(discountPerOrder) else 0
         }
 
-        fun benefitDiscount(totalPrice: Int): String  {
+        fun benefitDiscount(totalPrice: Int): Int  {
             return if (totalPrice >= 120000) {
-                "25,000원"
+                25000
             } else {
-                "0원"
+                0
             }
         }
 
