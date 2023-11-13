@@ -34,37 +34,85 @@ class EventPlanner {
         }
 
         fun formatPrice(price: Int): String {
-            val formattedPrice = price.toString().reversed().chunked(3).joinToString(",").reversed()
-            return "${formattedPrice}원"
+            return price.toString().reversed().chunked(3).joinToString(",").reversed()
         }
 
-        fun getMenuPrice(menuName: String, menuList: List<Menu>): Int {
+        private fun getMenuPrice(menuName: String, menuList: List<Menu>): Int {
             val menu = menuList.find { it.menuName == menuName }
             return menu?.price ?: 0
         }
 
-        fun benefitCondition(totalPrice: Int) {
-            if (totalPrice >= 120000) {
-                println("샴페인 1개")
+        fun benefitCondition(totalPrice: Int): String {
+            return if (totalPrice >= 120000) {
+                "샴페인 1개"
             } else {
-                println("없음")
+                "없음"
             }
         }
 
-        fun calculateChristmasDiscount(date: Int): Int {
+        private fun calculateChristmasDiscount(date: Int): Int {
             val baseDiscount = 1000
-            val daysUntilChristmas = 25 - date
+            val daysUntilChristmas = 25 - date + 1
             val discountAmount = baseDiscount + 100 * (25 - daysUntilChristmas)
             return if (date in 1..25) discountAmount else 0
         }
 
-        fun christmasDC(date: Int): String {
-            val discountAmount = calculateChristmasDiscount(date)
-            return "${formatPrice(discountAmount)}원"
-
+        fun christmasDay(date: Int): String {
+            val discountedChristmas = calculateChristmasDiscount(date)
+            return formatPrice(discountedChristmas)
         }
 
+        private fun isWeekday(date: Int): Boolean {
+            val weekdays = setOf(3, 4, 5, 6, 7, 10, 11, 12, 13, 14, 15, 17, 18, 19, 20, 21, 24, 25, 26, 27, 28, 31)
+            return date in weekdays
+        }
 
+        fun weekdayDiscount(orderItems: List<OrderMenu>, date: Int): String {
+            val dessertMenu = setOf("초코케이크", "아이스크림")
+            val discountPerMenu = 2023
+            val discountedWeekday = orderItems.filter { it.name in dessertMenu && isWeekday(date) }
+                .sumOf { it.quantity * discountPerMenu }
+
+            return formatPrice(discountedWeekday)
+        }
+
+        fun specialDiscount(date: Int, orderItems: List<OrderMenu>): String {
+            val specialDiscountDates = setOf(3, 10, 17, 24, 25, 31)
+            val discountPerOrder = 1000
+            return if (date in specialDiscountDates) {
+                formatPrice(discountPerOrder)
+            } else {
+                "0원"
+            }
+        }
+
+        fun benefitDiscount(totalPrice: Int): String  {
+            return if (totalPrice >= 120000) {
+                "25,000원"
+            } else {
+                "0원"
+            }
+        }
+
+        fun weekendDiscount(orderItems: List<OrderMenu>, date: Int): Int {
+            val discountDates = setOf(1, 2, 8, 9, 15, 16, 22, 23, 29, 30)
+            if (date in discountDates) {
+                val mainMenus = mainMenuList()
+                return mainMenuDiscount(orderItems, mainMenus)
+            }
+            return 0
+        }
+
+        private fun mainMenuDiscount(orderItems: List<OrderMenu>, mainMenus: Set<String>): Int {
+            return orderItems.filter { it.name in mainMenus }.sumOf { 2023 * it.quantity }
+        }
+
+        private fun mainMenuList(): Set<String> {
+            return setOf(
+                Menu.T_BONE_STEAK.menuName, Menu.BARBECUE_RIBS.menuName,
+                Menu.SEAFOOD_PASTA.menuName, Menu.CHRISTMAS_PASTA.menuName
+            )
+        }
     }
 }
 
