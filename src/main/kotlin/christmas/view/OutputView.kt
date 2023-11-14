@@ -5,6 +5,11 @@ import christmas.model.EventPlanner.Companion.benefitCondition
 import christmas.model.EventPlanner.Companion.benefitDiscount
 import christmas.model.EventPlanner.Companion.calculateTotalPrice
 import christmas.model.EventPlanner.Companion.christmasDay
+import christmas.model.EventPlanner.Companion.eventBenefit
+import christmas.model.EventPlanner.Companion.eventChristmas
+import christmas.model.EventPlanner.Companion.eventSpecial
+import christmas.model.EventPlanner.Companion.eventWeekday
+import christmas.model.EventPlanner.Companion.eventWeekend
 import christmas.model.EventPlanner.Companion.formatPrice
 import christmas.model.EventPlanner.Companion.specialDiscount
 import christmas.model.EventPlanner.Companion.weekdayDiscount
@@ -51,45 +56,6 @@ class OutputView {
         eventBenefit(totalPrice)
     }
 
-    private fun eventBenefit(totalPrice: Int) {
-        val benefitDiscountAmount = benefitDiscount(totalPrice)
-        val benefitEvent = formatPrice(benefitDiscountAmount)
-        if (benefitDiscountAmount != 0) {
-            println("증정 이벤트: -${benefitEvent}원")
-        }
-    }
-
-    private fun eventSpecial(date: Int) {
-        val specialDiscountAmount = specialDiscount(date)
-        val specialEvent = formatPrice(specialDiscountAmount)
-        if (specialDiscountAmount != 0) {
-            println("특별 할인: -${specialEvent}원")
-        }
-    }
-
-    private fun eventWeekend(orderItems: List<OrderMenu>, date: Int) {
-        val weekendDiscountAmount = weekendDiscount(orderItems, date)
-        val weekendEvent = formatPrice(weekendDiscountAmount)
-        if (weekendDiscountAmount != 0) {
-            println("주말 할인: -${weekendEvent}원")
-        }
-    }
-
-    private fun eventWeekday(orderItems: List<OrderMenu>, date: Int) {
-        val weekdayDiscountAmount = weekdayDiscount(orderItems, date)
-        val weekdayEvent = formatPrice(weekdayDiscountAmount)
-        if (weekdayDiscountAmount != 0) {
-            println("평일 할인: -${weekdayEvent}원")
-        }
-    }
-
-    private fun eventChristmas(date: Int) {
-        val christmasDiscount = christmasDay(date)
-        val christmasEvent = formatPrice(christmasDiscount)
-        if (christmasDiscount != 0) {
-            println("크리스마스 디데이 할인: -${christmasEvent}원")
-        }
-    }
 
     fun totalBenefits(orderItems: List<OrderMenu>, date: Int, totalPrice: Int) {
         println("\n<총혜택 금액>")

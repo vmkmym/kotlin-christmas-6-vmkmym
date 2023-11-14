@@ -113,6 +113,46 @@ class EventPlanner {
                 Menu.SEAFOOD_PASTA.menuName, Menu.CHRISTMAS_PASTA.menuName
             )
         }
+
+        fun eventBenefit(totalPrice: Int) {
+            val benefitDiscountAmount = benefitDiscount(totalPrice)
+            val benefitEvent = formatPrice(benefitDiscountAmount)
+            if (benefitDiscountAmount != 0) {
+                println("증정 이벤트: -${benefitEvent}원")
+            }
+        }
+
+        fun eventSpecial(date: Int) {
+            val specialDiscountAmount = specialDiscount(date)
+            val specialEvent = formatPrice(specialDiscountAmount)
+            if (specialDiscountAmount != 0) {
+                println("특별 할인: -${specialEvent}원")
+            }
+        }
+
+        fun eventWeekend(orderItems: List<OrderMenu>, date: Int) {
+            val weekendDiscountAmount = weekendDiscount(orderItems, date)
+            val weekendEvent = formatPrice(weekendDiscountAmount)
+            if (weekendDiscountAmount != 0) {
+                println("주말 할인: -${weekendEvent}원")
+            }
+        }
+
+        fun eventWeekday(orderItems: List<OrderMenu>, date: Int) {
+            val weekdayDiscountAmount = weekdayDiscount(orderItems, date)
+            val weekdayEvent = formatPrice(weekdayDiscountAmount)
+            if (weekdayDiscountAmount != 0) {
+                println("평일 할인: -${weekdayEvent}원")
+            }
+        }
+
+        fun eventChristmas(date: Int) {
+            val christmasDiscount = christmasDay(date)
+            val christmasEvent = formatPrice(christmasDiscount)
+            if (christmasDiscount != 0) {
+                println("크리스마스 디데이 할인: -${christmasEvent}원")
+            }
+        }
     }
 }
 

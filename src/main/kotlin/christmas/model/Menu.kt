@@ -3,7 +3,7 @@ package christmas.model
 
 enum class Menu(val menuName: String, val price: Int) {
     MUSHROOM_SOUP("양송이수프", 6000),
-    TAPAS("타파스", 5000),
+    TAPAS("타파스", 5500),
     CAESAR_SALAD("시저샐러드", 8000),
 
     T_BONE_STEAK("티본스테이크", 55000),
