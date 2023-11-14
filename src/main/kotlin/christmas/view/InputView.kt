@@ -5,6 +5,8 @@ import christmas.model.EventPlanner.Companion.checkDate
 import christmas.model.EventPlanner.Companion.isValidInput
 import christmas.model.EventPlanner.Companion.parseOrderInput
 import christmas.model.OrderMenu
+import christmas.utils.ErrorHandler
+import christmas.utils.ErrorHandler.Companion.checkReceiveOrder
 
 
 class InputView {
@@ -25,12 +27,17 @@ class InputView {
 
     fun receiveOrder(): List<OrderMenu> {
         while (true) {
+            println("주문하실 메뉴를 메뉴와 개수를 알려 주세요. (e.g. 해산물파스타-2,레드와인-1,초코케이크-1)")
             try {
-                println("주문하실 메뉴를 메뉴와 개수를 알려 주세요. (e.g. 해산물파스타-2,레드와인-1,초코케이크-1)")
                 val input = Console.readLine()
                 val menuItems = parseOrderInput(input)
+
+                checkReceiveOrder(menuItems)
+
                 if (isValidInput(menuItems)) return menuItems
             } catch (e: IllegalArgumentException) {
+                println(e.message)
+            } catch (e: IndexOutOfBoundsException) {
                 println(e.message)
             }
         }

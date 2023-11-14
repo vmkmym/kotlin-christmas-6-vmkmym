@@ -25,6 +25,7 @@ class OutputView {
 
     fun orderMenu(orderItems: List<OrderMenu>) {
         println("\n<주문 메뉴>")
+
         val formattedOrders = EventPlanner.orderFormat(orderItems)
         for ((menu, quantity) in formattedOrders) {
             println("$menu ${quantity}개")
@@ -33,14 +34,16 @@ class OutputView {
 
     fun totalOriginalPrice(orderItems: List<OrderMenu>): Int {
         println("\n<할인 전 총주문 금액>")
+
         val totalPrice = calculateTotalPrice(orderItems, Menu.entries)
         val formattedTotalPrice = formatPrice(totalPrice)
-        println(formattedTotalPrice)
+        println("${formattedTotalPrice}원")
         return totalPrice
     }
 
     fun totalGift(orderItems: List<OrderMenu>) {
         println("\n<증정 메뉴>")
+
         val totalPrice = calculateTotalPrice(orderItems, Menu.entries)
         val benefitResult = benefitCondition(totalPrice)
         println(benefitResult)
@@ -49,13 +52,23 @@ class OutputView {
     fun totalDiscount(date: Int, orderItems: List<OrderMenu>, totalPrice: Int) {
         println("\n<혜택 내역>")
 
-        eventChristmas(date)
-        eventWeekday(orderItems, date)
-        eventWeekend(orderItems, date)
-        eventSpecial(date)
-        eventBenefit(totalPrice)
-    }
+        val eventChristmas = christmasDay(date)
+        val eventWeekday = weekdayDiscount(orderItems, date)
+        val eventWeekend = weekendDiscount(orderItems, date)
+        val eventSpecial = specialDiscount(date)
+        val eventBenefit = benefitDiscount(totalPrice)
+        val totalBenefits = eventBenefit + eventSpecial + eventWeekend + eventWeekday + eventChristmas
 
+        if (totalBenefits != 0) {
+            eventChristmas(date)
+            eventWeekday(orderItems, date)
+            eventWeekend(orderItems, date)
+            eventSpecial(date)
+            eventBenefit(totalPrice)
+        } else {
+            println("없음")
+        }
+    }
 
     fun totalBenefits(orderItems: List<OrderMenu>, date: Int, totalPrice: Int) {
         println("\n<총혜택 금액>")
@@ -65,9 +78,13 @@ class OutputView {
         val eventWeekend = weekendDiscount(orderItems, date)
         val eventSpecial = specialDiscount(date)
         val eventBenefit = benefitDiscount(totalPrice)
-
         val totalBenefits = eventBenefit + eventSpecial + eventWeekend + eventWeekday + eventChristmas
-        println("-${formatPrice(totalBenefits)}원")
+
+        if (totalBenefits != 0) {
+            println("-${formatPrice(totalBenefits)}원")
+        } else {
+            println("없음")
+        }
     }
 
     fun finalPayment(orderItems: List<OrderMenu>, date: Int, totalPrice: Int) {
@@ -77,10 +94,13 @@ class OutputView {
         val eventWeekday = weekdayDiscount(orderItems, date)
         val eventWeekend = weekendDiscount(orderItems, date)
         val eventSpecial = specialDiscount(date)
-
         val totalBenefits = eventSpecial + eventWeekend + eventWeekday + eventChristmas
         val payments = totalPrice - totalBenefits
-        println("${formatPrice(payments)}원")
+
+        if (payments != 0) {
+            println("${formatPrice(payments)}원")
+        } else
+            println("없음")
     }
 
     fun eventBadge(orderItems: List<OrderMenu>, date: Int, totalPrice: Int) {
@@ -91,7 +111,6 @@ class OutputView {
         val eventWeekend = weekendDiscount(orderItems, date)
         val eventSpecial = specialDiscount(date)
         val eventBenefit = benefitDiscount(totalPrice)
-
         val totalBenefits = eventBenefit + eventSpecial + eventWeekend + eventWeekday + eventChristmas
 
         val badge = when {

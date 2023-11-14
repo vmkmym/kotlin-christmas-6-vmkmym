@@ -26,6 +26,9 @@ class EventPlanner {
             if (parts.size != 2) {
                 throw IllegalArgumentException("[ERROR] 유효하지 않은 주문입니다. 다시 입력해 주세요.")
             }
+            if (parts[1].toIntOrNull() == null) {
+                throw IndexOutOfBoundsException("[ERROR] 유효하지 않은 주문입니다. 다시 입력해 주세요.")
+            }
             return OrderMenu(parts[0], parts[1].toInt())
         }
 
