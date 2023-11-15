@@ -12,7 +12,6 @@ fun main() {
     // 주문할 메뉴
     val orderItems = inputView.receiveOrder()
 
-
     // 이벤트 혜택 미리보기
     outputView.showEventBenefit(date)
     // 주문 메뉴
